@@ -84,11 +84,13 @@ namespace RPiClient.SensorControl
 			AccelerationY = e.Values[0].AccelerationY;
 			AccelerationZ = e.Values[0].AccelerationZ;
 
-			if (Math.Abs(AccelerationX) > 0.02)
+			if (Math.Abs(AccelerationX) > 0.014)
 			{
 				Xspeed = Xspeed + AccelerationX * e.SamplePeriod;
 				Displacement = Displacement + Xspeed * e.SamplePeriod;
 			}
+			else
+				Xspeed = 0;
 		}
 
 		public double GetDistance()

@@ -70,7 +70,7 @@ namespace RPiClient
 			MovementControl = new Motions(Motor.Motor_Default);
 			LEDControl = new ILEDController[NumberofLEDs];
 			ServoControl = Servo.Default;
-			LEDControl[0] = LEDController.LEDGroup_BlueRed;
+			LEDControl[0] = LEDDriver.LEDGroup_BlueRed;
 			Sensor = new SensorGroup(SuperSonic.Default, Gyroscope.Default);
 
 			OperationTimeout = 1000;

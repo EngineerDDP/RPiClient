@@ -3,12 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RPiClient.Interface;
 using Windows.Devices.Gpio;
 using Windows.Devices.I2c;
 
-namespace RPiClient.SensorControl.Devices
+namespace RPiClient.Gyroscope
 {
-	class Gyroscope : IGyroscope
+
+	/// <summary>
+	/// 常量
+	/// </summary>
+	public class Constants
+	{
+		public const byte Address = 0x68;
+		public const byte PwrMgmt1 = 0x6B;
+		public const byte SmplrtDiv = 0x19;
+		public const byte Config = 0x1A;
+		public const byte GyroConfig = 0x1B;
+		public const byte AccelConfig = 0x1C;
+		public const byte FifoEn = 0x23;
+		public const byte IntEnable = 0x38;
+		public const byte IntStatus = 0x3A;
+		public const byte UserCtrl = 0x6A;
+		public const byte FifoCount = 0x72;
+		public const byte FifoRW = 0x74;
+		public const int SensorBytes = 12;
+
+		public const byte XGyro_Offset = 0x13;
+		public const byte YGyro_Offset = 0x15;
+		public const byte ZGyro_Offset = 0x17;
+	}
+
+	class Gyroscope : IDriver
 	{
 		#region 默认设备
 		private static Gyroscope Device_0;
@@ -58,7 +84,7 @@ namespace RPiClient.SensorControl.Devices
 
 				if ((interruptStatus & 0x10) != 0)
 				{
-					MPU6050.WriteByte(Constants.UserCtrl, 0x44); // reset and enable fifo
+					MPU6050.WriteByte(Constants.UserCtrl, 0x44); // 重置并设置FIFO
 				}
 				if ((interruptStatus & 0x01) != 0)
 				{
@@ -138,28 +164,45 @@ namespace RPiClient.SensorControl.Devices
 			MPU6050.WriteWord(Constants.ZGyro_Offset, 0xFFE1);
 		}
 
-		/// <summary>
-		/// 常量
-		/// </summary>
-		public class Constants
+		public void QuickStop()
 		{
-			public const byte Address = 0x68;
-			public const byte PwrMgmt1 = 0x6B;
-			public const byte SmplrtDiv = 0x19;
-			public const byte Config = 0x1A;
-			public const byte GyroConfig = 0x1B;
-			public const byte AccelConfig = 0x1C;
-			public const byte FifoEn = 0x23;
-			public const byte IntEnable = 0x38;
-			public const byte IntStatus = 0x3A;
-			public const byte UserCtrl = 0x6A;
-			public const byte FifoCount = 0x72;
-			public const byte FifoRW = 0x74;
-			public const int SensorBytes = 12;
-
-			public const byte XGyro_Offset = 0x13;
-			public const byte YGyro_Offset = 0x15;
-			public const byte ZGyro_Offset = 0x17;
+			InterruptPin.ValueChanged -= InterruptPin_ValueChanged;
 		}
+
+		#region IDisposable Support
+		private bool disposedValue = false; // 要检测冗余调用
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposedValue)
+			{
+				if (disposing)
+				{
+					// TODO: 释放托管状态(托管对象)。
+					InterruptPin.Dispose();
+				}
+
+				// TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
+				// TODO: 将大型字段设置为 null。
+
+				disposedValue = true;
+			}
+		}
+
+		// TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+		// ~Gyroscope() {
+		//   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+		//   Dispose(false);
+		// }
+
+		// 添加此代码以正确实现可处置模式。
+		public void Dispose()
+		{
+			// 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+			Dispose(true);
+			// TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
+			// GC.SuppressFinalize(this);
+		}
+		#endregion
 	}
 }

@@ -76,7 +76,7 @@ namespace RPiClient
 			{
 				try
 				{
-					await NetClient.SetRemoteAddress(new Windows.Networking.HostName("192.168.1.100"), "13897", "", ESocketModule.TransmissionProtocol.TransmissionControlProtocol);
+					await NetClient.SetRemoteAddress(new Windows.Networking.HostName("192.168.137.1"), "13897", "", ESocketModule.TransmissionProtocol.TransmissionControlProtocol);
 					Connected = true;
 				}
 				catch

@@ -4,32 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IoT.Lightning.Providers;
+using RPiClient.Interface;
 using Windows.Devices;
 using Windows.Devices.Gpio;
 using Windows.Devices.Pwm;
 
-namespace RPiClient.MotionControl.Devices
+namespace RPiClient.SpeedControl
 {
 	/// <summary>
 	/// 本地物理电机控制器设备
 	/// </summary>
-	class Motor : IMotorDevice, IDisposable
+	class MotorDriver : IDriver
 	{
 		#region 默认电机组
-		private static Motor Device_0;
+		private static MotorDriver Device_0;
 
 		/// <summary>
 		/// 获取默认的电机控制器
 		/// </summary>
 		/// <returns></returns>
-		public static Motor Motor_Default
+		public static MotorDriver Motor_Default
 		{
 			get
 			{
 				if(Device_0 == null)
 				{
 					int[] gpios = { 17, 18, 27, 22 };
-					Device_0 = new Motor(gpios, 50);
+					Device_0 = new MotorDriver(gpios, 50);
 				}
 				return Device_0;
 			}
@@ -52,7 +53,7 @@ namespace RPiClient.MotionControl.Devices
 		/// <summary>
 		/// 链接到指定的L298N电机控制器
 		/// </summary>
-		private Motor(int []gpios, int freq)
+		private MotorDriver(int []gpios, int freq)
 		{
 			IN = new PwmPin[PinNumbers];
 			Frequency = freq;
@@ -119,6 +120,14 @@ namespace RPiClient.MotionControl.Devices
 					break;
 			}
 		}
+		/// <summary>
+		/// 立即停止工作
+		/// </summary>
+		public void QuickStop()
+		{
+			PowerLeft(0, Direction.Forward);
+			PowerRight(0, Direction.Forward);
+		}
 
 		#region IDisposable Support
 		private bool disposedValue = false; // 要检测冗余调用
@@ -130,10 +139,11 @@ namespace RPiClient.MotionControl.Devices
 				if (disposing)
 				{
 					// TODO: 释放托管状态(托管对象)。
-					foreach(PwmPin pin in IN)
+					int i;
+					for (i = 0; i < IN.Length; ++i) 
 					{
-						pin.Stop();
-						pin.Dispose();
+						IN[i].Stop();
+						IN[i].Dispose();
 					}
 				}
 
@@ -158,6 +168,7 @@ namespace RPiClient.MotionControl.Devices
 			// TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
 			// GC.SuppressFinalize(this);
 		}
+
 		#endregion
 	}
 }

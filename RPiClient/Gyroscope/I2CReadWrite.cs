@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.I2c;
 
-namespace RPiClient.SensorControl.Devices
+namespace RPiClient.Gyroscope
 {
 	class I2CReadWrite
 	{
@@ -89,7 +89,7 @@ namespace RPiClient.SensorControl.Devices
 		/// <returns></returns>
 		public ushort ReadWord(byte address)
 		{
-			byte[] buffer = ReadBytes(Gyroscope.Constants.FifoCount, 2);
+			byte[] buffer = ReadBytes(Constants.FifoCount, 2);
 			return (ushort)(((int)buffer[0] << 8) | (int)buffer[1]);
 		}
 
@@ -143,6 +143,11 @@ namespace RPiClient.SensorControl.Devices
 			Array.Copy(values, 0, buffer, 1, values.Length);
 			Device.Write(buffer);
 		}
+		/// <summary>
+		/// 写入一个字（2字节）
+		/// </summary>
+		/// <param name="regAddr"></param>
+		/// <param name="value"></param>
 		public void WriteWord(byte regAddr, ushort value)
 		{
 			byte[] buffer = new byte[2];
