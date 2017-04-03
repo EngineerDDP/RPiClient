@@ -3,47 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NativeWifi;
+using Windows.Devices.WiFi;
+using Windows.System.Threading;
 
 namespace RPiClient.SensorControl.Devices
 {
-	class WifiScanner : IWifiScanner
+	class WifiScanner
 	{
-		private NativeWifi.WlanClient Client;
-		private Dictionary<String, int> List;
+		/// <summary>
+		/// Wifi适配器
+		/// </summary>
+		private WiFiAdapter Client;
+		/// <summary>
+		/// RSSI列表，保存了所有的SSID和更新后的RSSI信息
+		/// </summary>
+		private Dictionary<String, int> RSSIList;
+		/// <summary>
+		/// 获取指定SSID的RSSI信息
+		/// </summary>
+		public int LookUpForRSSI(String ssid)
+		{
+			int rssi = -100;
+			RSSIList.TryGetValue(ssid, out rssi);
+			return rssi;
+		}
 		public WifiScanner()
 		{
-			Client = new WlanClient();
-			List = new Dictionary<string, int>();
-			RefrashList();
+			//等待初始化并开始扫描更新Wifi
+			ThreadPoolTimer.CreateTimer((ThreadPoolTimer t) => { Init().Wait(); }, TimeSpan.FromMilliseconds(100));
+			RSSIList = new Dictionary<string, int>();
 		}
-		public int GetLinkQuality(string ssid)
+		/// <summary>
+		/// 初始化WifiAdapter
+		/// </summary>
+		private async System.Threading.Tasks.Task Init()
 		{
-			RefrashList();
-			return List[ssid];
-		}
+			Client = (await WiFiAdapter.FindAllAdaptersAsync())[0];
 
-		public string[] ListAccessPoint()
-		{
-			RefrashList();
-			String[] results = List.Keys.ToArray();
-			return results;
+			Client.AvailableNetworksChanged += Client_AvailableNetworksChanged;
+			await Client.ScanAsync();
 		}
-		private void RefrashList()
+		/// <summary>
+		/// 更新RSSI信息列表
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
+		private void Client_AvailableNetworksChanged(WiFiAdapter sender, object args)
 		{
-			Wlan.WlanBssEntry[] lstWlanBss = Client.Interfaces[0].GetNetworkBssList();
-			foreach(var ap in lstWlanBss)
+			RSSIList.Clear();
+			foreach(var i in sender.NetworkReport.AvailableNetworks)
 			{
-				string ssid = System.Text.Encoding.UTF8.GetString(ap.dot11Ssid.SSID);
-				int dbm = CalculateSignalQuality(ap.linkQuality);
-				List.Add(ssid, dbm);
+				RSSIList.Add(i.Ssid, (int)i.NetworkRssiInDecibelMilliwatts);
 			}
-		}
-		int CalculateSignalQuality(uint Percentage)
-		{
-			int RSSI = (int)Percentage / 2 - 100;
-
-			return RSSI;
+			Client.ScanAsync().AsTask().Wait();
 		}
 	}
 }

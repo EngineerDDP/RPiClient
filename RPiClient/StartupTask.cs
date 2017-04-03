@@ -12,8 +12,6 @@ using Microsoft.IoT.Lightning.Providers;
 using Windows.Devices;
 using ESocketModule.ClientEntry;
 using Windows.Networking;
-using RPiClient.MotionControl;
-using RPiClient.MotionControl.Devices;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
@@ -25,14 +23,15 @@ namespace RPiClient
     public sealed class StartupTask : IBackgroundTask
     {
 		BackgroundTaskDeferral deferral;
-		IUGVManager manager;
 
-		public async void Run(IBackgroundTaskInstance taskInstance)
+		public void Run(IBackgroundTaskInstance taskInstance)
 		{
+			LocalController con = new LocalController();
 			deferral = taskInstance.GetDeferral();
-			manager = new NetworkUGVManager();
-			//manager = new AutoPilot();
-			await manager.Start(UGV.UGV_Default);
+
+			con.Init();
+			con.Run();
+			con.Exit();
 		}
 	}
 }

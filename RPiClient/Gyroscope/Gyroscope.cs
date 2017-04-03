@@ -13,7 +13,7 @@ namespace RPiClient.Gyroscope
 	/// <summary>
 	/// 常量
 	/// </summary>
-	public class Constants
+	class Constants
 	{
 		public const byte Address = 0x68;
 		public const byte PwrMgmt1 = 0x6B;

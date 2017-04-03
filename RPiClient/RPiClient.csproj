@@ -96,13 +96,15 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gyroscope\Orientation.cs" />
     <Compile Include="Interface\DeviceList.cs" />
     <Compile Include="Interface\IDriver.cs" />
-    <Compile Include="IUGVManager.cs" />
+    <None Include="Interface\SensorGroup.cs" />
     <Compile Include="LED\LEDController.cs" />
     <Compile Include="LED\LEDDriver.cs" />
     <Compile Include="LED\Light.cs" />
-    <Compile Include="LocalUGVManager.cs" />
+    <None Include="Interface\LocalUGVManager.cs" />
+    <Compile Include="LocalController.cs" />
     <Compile Include="Servo\AngleController.cs" />
     <Compile Include="Servo\Servo.cs" />
     <Compile Include="Servo\ViewAngle.cs" />
@@ -111,19 +113,17 @@
     <Compile Include="Gyroscope\Gyroscope.cs" />
     <Compile Include="Gyroscope\GyroscopeEventArgs.cs" />
     <Compile Include="Gyroscope\I2CReadWrite.cs" />
-    <Compile Include="Gyroscope\IGyroscope.cs" />
     <Compile Include="SuperSonic\ISuperSonic.cs" />
+    <Compile Include="UGVManager.cs" />
     <Compile Include="WiFiScanner\IWifiScanner.cs" />
     <Compile Include="SuperSonic\SerialCom.cs" />
     <Compile Include="SuperSonic\SuperSonic.cs" />
     <Compile Include="WiFiScanner\WifiScanner.cs" />
-    <Compile Include="Interface\SensorGroup.cs" />
-    <Compile Include="Interface\IInfoCollector.cs" />
     <Compile Include="SpeedControl\SpeedController.cs" />
     <Compile Include="StartupTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UGV.cs" />
-    <Compile Include="NetworkUGVManager.cs" />
+    <None Include="Interface\NetworkUGVManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -168,11 +168,6 @@
       <Project>{076a324d-583d-4664-b868-73549c9e0be4}</Project>
       <Name>ESocketModule</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="ManagedWifi">
-      <HintPath>.\ManagedWifi.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
