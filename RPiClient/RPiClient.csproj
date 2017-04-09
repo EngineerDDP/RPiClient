@@ -113,10 +113,12 @@
     <Compile Include="Gyroscope\Gyroscope.cs" />
     <Compile Include="Gyroscope\GyroscopeEventArgs.cs" />
     <Compile Include="Gyroscope\I2CReadWrite.cs" />
+    <Compile Include="SuperSonic\Arduino.cs" />
+    <Compile Include="SuperSonic\DeviceListEntry.cs" />
+    <Compile Include="SuperSonic\EventHandlerForDevice.cs" />
     <Compile Include="SuperSonic\ISuperSonic.cs" />
+    <Compile Include="SuperSonic\SerialComDeviceWatcher.cs" />
     <Compile Include="UGVManager.cs" />
-    <Compile Include="WiFiScanner\IWifiScanner.cs" />
-    <Compile Include="SuperSonic\SerialCom.cs" />
     <Compile Include="SuperSonic\SuperSonic.cs" />
     <Compile Include="WiFiScanner\WifiScanner.cs" />
     <Compile Include="SpeedControl\SpeedController.cs" />

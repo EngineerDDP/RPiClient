@@ -27,7 +27,6 @@ namespace RPiClient
 		public void Run(IBackgroundTaskInstance taskInstance)
 		{
 			LocalController con = new LocalController();
-			deferral = taskInstance.GetDeferral();
 
 			con.Init();
 			con.Run();

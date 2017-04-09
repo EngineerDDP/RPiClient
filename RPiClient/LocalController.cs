@@ -28,6 +28,7 @@ namespace RPiClient
 		/// </summary>
 		public void Run()
 		{
+			Task.Delay(1000).Wait();
 			ugv.LED.Set(LED.LEDMode.Special_A);
 			Task.Delay(10000).Wait();
 		}

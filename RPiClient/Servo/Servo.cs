@@ -51,8 +51,6 @@ namespace RPiClient.Servo
 
 			if (LightningProvider.IsLightningEnabled)
 			{
-				//获取控制器
-				LowLevelDevicesController.DefaultProvider = LightningProvider.GetAggregateProvider();
 				//获取系统Pwm控制器
 				Task<IReadOnlyList<PwmController>> t = PwmController.GetControllersAsync(LightningPwmProvider.GetPwmProvider()).AsTask<IReadOnlyList<PwmController>>();
 				t.Wait();

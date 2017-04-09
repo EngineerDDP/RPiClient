@@ -129,7 +129,7 @@ namespace RPiClient.LED
 		{
 			Change = (bool[] s) =>
 			{
-				return s;
+				return new bool[] { false, false, false, false };
 			};
 		}
 
